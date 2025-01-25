@@ -31,7 +31,7 @@ const ListeUSER = () => {
     setAnne(currentYear); */
     let GetDATA = async () => {
       try {
-        const response = await fetch("http://localhost:5000/wifi/user", {
+        const response = await fetch("https://addwifi.onrender.com/wifi/user", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -76,7 +76,7 @@ const ListeUSER = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/wifi/user", {
+      const response = await fetch("https://addwifi.onrender.com/wifi/user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
