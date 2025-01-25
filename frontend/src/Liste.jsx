@@ -47,6 +47,7 @@ const ListeUSER = () => {
         }
 
         const result = await response.json();
+
         setData(result);
       } catch (err) {
         console.error("Erreur lors de la récupération des données:", err);
