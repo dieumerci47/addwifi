@@ -101,7 +101,7 @@ const ListeUSER = () => {
   };
   return (
     <div className="liste-container">
-      <h1>Liste Des Personnes Qui Ont Participé Au WIFI</h1>
+      <h1>Liste Des Personnes Qui Ont Participé Au WIFIXS</h1>
 
       <div className="actions-container">
         <button className="add-button">
