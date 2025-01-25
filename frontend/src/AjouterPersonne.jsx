@@ -65,7 +65,7 @@ const AddUSER = () => {
       return;
     }
     try {
-      const response = await fetch("http://localhost:5000/wifi/admin", {
+      const response = await fetch("https://addwifi.onrender.com/wifi/admin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -84,12 +84,12 @@ const AddUSER = () => {
       const DATAS = {
         nom: newUser.nom,
         prix: newUser.prix,
-        mois: newUser.mois,
+        mois: newUser.mois.toLowerCase(),
         annee: newUser.annee,
       };
       const result = await response.json();
       if (result) {
-        await fetch("http://localhost:5000/wifi/adduser", {
+        await fetch("https://addwifi.onrender.com/wifi/adduser", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

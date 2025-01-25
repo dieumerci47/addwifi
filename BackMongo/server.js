@@ -24,8 +24,13 @@ app.get("/", (req, res) => {
 });
 app.post("/wifi/user", async (req, res) => {
   try {
-    //  const { mois, annee } = req.body;
-    const users = await User.find();
+    const { mois, annee } = req.body;
+    const users = await User.find()
+      .where("mois")
+      .equals(mois.toLowerCase())
+      .where("annee")
+      .equals(annee);
+
     res.status(200).json(users);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -78,10 +83,17 @@ app.put("/wifi/user/:id", async (req, res) => {
 });
 
 app.post("/wifi/adduser", async (req, res) => {
+  const mois = req.body.mois;
   try {
-    const { nom, prix, mois, annee } = req.body;
-    const newUser = await User.create({ nom, prix, mois, annee });
-    res.status(200).json({ message: "Donnée enregistrée", user: newUser });
+    const newUser = new User({ mois: mois.toLowerCase(), ...req.body });
+    newUser
+      .save()
+      .then((user) => {
+        res.status(200).json(user);
+      })
+      .catch((error) => {
+        res.status(400).json({ message: error.message });
+      });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
