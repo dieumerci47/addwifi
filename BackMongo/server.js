@@ -19,7 +19,9 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-
+app.get("/", (req, res) => {
+  res.send("Bienvenue sur l'API !");
+});
 app.post("/wifi/user", async (req, res) => {
   try {
     //  const { mois, annee } = req.body;
