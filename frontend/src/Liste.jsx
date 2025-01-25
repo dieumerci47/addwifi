@@ -164,7 +164,7 @@ const ListeUSER = () => {
           </thead>
           <tbody>
             {data.map((personne, index) => (
-              <tr key={personne.id}>
+              <tr key={personne._id}>
                 <td>{index + 1}</td>
                 <td>{personne.nom.toUpperCase()}</td>
                 <td>{personne.prix}</td>
