@@ -249,3 +249,67 @@ button:hover {
   margin-right: 8px;
   font-size: 16px;
 }
+
+@media (max-width: 768px) {
+  .form-container {
+    margin: 10px;
+    padding: 15px;
+    max-width: 100%;
+  }
+
+  .header-container {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .back-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .form-group label {
+    font-size: 14px;
+  }
+
+  .form-group input,
+  .form-group select {
+    font-size: 16px; /* Meilleure lisibilité sur mobile */
+    padding: 12px; /* Plus grand pour une meilleure zone de toucher */
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .modal {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .modal-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .modal-buttons button {
+    width: 100%;
+  }
+
+  .toast-container {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .toast {
+    width: 100%;
+  }
+
+  .toast-content {
+    width: 100%;
+  }
+}

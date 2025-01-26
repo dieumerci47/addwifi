@@ -40,7 +40,7 @@ const AddUSER = () => {
   const currentMth = currentDate.getMonth();
 
   // Créer un tableau de mois disponibles jusqu'au mois actuel
-  const availableMonths = Array.from({ length: currentMth + 1 }, (_, index) => {
+  const availableMonths = Array.from({ length: currentMth + 2 }, (_, index) => {
     const date = new Date(2024, index);
     return new Intl.DateTimeFormat("fr-FR", { month: "long" })
       .format(date)

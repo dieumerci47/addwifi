@@ -25,6 +25,7 @@ app.get("/", (req, res) => {
 app.post("/wifi/user", async (req, res) => {
   try {
     const { mois, annee } = req.body;
+    // console.log(req.body);
     const users = await User.find()
       .where("mois")
       .equals(mois.toLowerCase())
