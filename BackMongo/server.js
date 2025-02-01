@@ -103,4 +103,7 @@ app.post("/wifi/adduser", async (req, res) => {
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`Le serveur est lancé sur le port ${port}`);
+  setInterval(() => {
+    console.log("Le serveur est lancé sur le port " + port);
+  }, 100000);
 });
