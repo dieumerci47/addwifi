@@ -66,6 +66,7 @@ const ListeUSER = () => {
       setError(
         "Erreur lors de la récupération des données. Veuillez réessayer."
       );
+      setDebut(false);
     } finally {
       setLoading(false);
     }
