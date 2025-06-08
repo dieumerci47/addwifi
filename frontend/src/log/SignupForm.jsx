@@ -1,5 +1,6 @@
 import { useState } from "react";
 import LoginForm from "./LoginForm";
+import "./FormConnexion.css";
 
 const SignupForm = () => {
   const [nom, setNom] = useState("");
@@ -36,8 +37,9 @@ const SignupForm = () => {
           <p>Enregistrement réussi. Connectez-vous</p>
         </>
       ) : (
-        <form onSubmit={handleSubmit}>
-          <div>
+        <form className="form-container" onSubmit={handleSubmit}>
+          <div className="form-title">Créer un compte</div>
+          <div className="form-group">
             <label>Nom:</label>
             <input
               type="text"
@@ -46,7 +48,7 @@ const SignupForm = () => {
               required
             />
           </div>
-          <div>
+          <div className="form-group">
             <label>Email:</label>
             <input
               type="email"
@@ -55,7 +57,7 @@ const SignupForm = () => {
               required
             />
           </div>
-          <div>
+          <div className="form-group">
             <label>Password:</label>
             <input
               type="password"

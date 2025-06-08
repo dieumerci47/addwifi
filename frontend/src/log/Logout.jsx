@@ -1,5 +1,5 @@
 import cookie from "js-cookie";
-
+import { NavLink } from "react-router-dom";
 const Logout = () => {
   //const URL = "https://addwifi.onrender.com";
   const LOCAL = "http://localhost:5000";
@@ -21,7 +21,10 @@ const Logout = () => {
   return (
     <>
       <li onClick={logout}>
-        <h3>Logout</h3>
+        <NavLink to="" className="nav-login-btn">
+          Logout
+        </NavLink>
+        {/* <h3>Logout</h3> */}
       </li>
     </>
   );

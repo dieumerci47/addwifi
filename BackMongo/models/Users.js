@@ -7,11 +7,11 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    /*  admin: {
+    admin: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Admin",
       required: true,
-    }, */
+    },
     telephone: {
       // Ajout recommandé pour identifier les personnes
       type: String,

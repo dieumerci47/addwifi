@@ -1,8 +1,22 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./AjouterPersonne.css";
+import { useSelector, useDispatch } from "react-redux";
+import { getAllUsers } from "../action/UsersAction";
 const Paiement = () => {
+  const Uid = useSelector((state) => state.OneAdminReducer._id);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllUsers());
+  }, [dispatch]);
+  let USERS = useSelector((state) => state.UsersReducer);
+  let users;
+  USERS.length > 0
+    ? (users = USERS.filter((user) => user.admin === Uid))
+    : (users = []);
+
   const [newUser, setNewUser] = useState({
+    userId: "",
     nom: "",
     prix: "",
     mois: "",
@@ -46,7 +60,7 @@ const Paiement = () => {
       return;
     }
     // setShowAdminModal(true);
-    handleAdminSubmit();
+    handleAdminSubmit(e);
   };
 
   const handleAdminSubmit = async (e) => {
@@ -54,31 +68,36 @@ const Paiement = () => {
 
     try {
       const DATAS = {
+        userId: newUser.userId,
         nom: newUser.nom,
         prix: newUser.prix,
         mois: newUser.mois.toLowerCase(),
         annee: newUser.annee,
       };
 
-      await fetch(`${LOCAL}/wifi/adduser`, {
+      await fetch(`${LOCAL}/wifi/admin/payment`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(DATAS),
-      });
-      // Ici vous pourrez ajouter la logique pour sauvegarder les données
-      console.log("Nouvelle personne :", newUser);
-      setError("");
-      // Réinitialiser le formulaire
-      setNewUser({
-        nom: "",
-        prix: "",
-        mois: "",
-        annee: "",
-      });
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res);
+          // Ici vous pourrez ajouter la logique pour sauvegarder les données
+          setError("");
+          // Réinitialiser le formulaire
+          setNewUser({
+            userId: "",
+            prix: "",
+            mois: "",
+            annee: "",
+          });
 
-      setShowToast(true); // Afficher le toast après succès
+          setShowToast(true); // Afficher le toast après succès
+        });
 
       // setData(result);
     } catch (err) {
@@ -91,11 +110,21 @@ const Paiement = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewUser((prev) => ({
-      ...prev,
-      [name]: name === "prix" ? Number(value) : value,
-    }));
-    setError(""); // Effacer l'erreur quand l'utilisateur commence à taper
+    if (name === "userId") {
+      // Trouver la personne sélectionnée
+      const selectedUser = users.find((u) => u._id === value);
+      setNewUser((prev) => ({
+        ...prev,
+        userId: value,
+        nom: selectedUser ? selectedUser.nom : "",
+      }));
+    } else {
+      setNewUser((prev) => ({
+        ...prev,
+        [name]: name === "prix" ? Number(value) : value,
+      }));
+    }
+    setError("");
   };
 
   return (
@@ -112,14 +141,34 @@ const Paiement = () => {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="nom">Nom:</label>
-          <input
-            type="text"
-            id="nom"
-            name="nom"
-            value={newUser.nom}
-            onChange={handleChange}
-            required
-          />
+          {
+            <select
+              id="nom"
+              name="userId"
+              value={newUser.userId}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Sélectionnez une Personne</option>
+              {users.length > 0 ? (
+                users.map((user) => (
+                  <option key={user._id} value={user._id}>
+                    {user.nom}
+                  </option>
+                ))
+              ) : (
+                <option value="">Aucune personne trouvée</option>
+              )}
+            </select>
+          }
+          {/*  <input
+              type="text"
+              id="nom"
+              name="nom"
+              value={newUser.nom}
+              onChange={handleChange}
+              required
+            /> */}
         </div>
 
         <div className="form-group">

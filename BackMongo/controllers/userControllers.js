@@ -4,13 +4,25 @@ const Users = require("../models/Users");
 module.exports.getAllUser = async (req, res) => {
   try {
     const { mois, annee } = req.body;
-    // console.log(req.body);
     const users = await User.find()
       .where("mois")
       .equals(mois.toLowerCase())
       .where("annee")
       .equals(annee);
 
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+module.exports.getAllUsers = async (req, res) => {
+  try {
+    const { mois, annee } = req.body;
+    // console.log(req.body);
+    const users = await Users.find(/* {
+      "paiements.mois": mois,
+      "paiements.annee": annee,
+    } */);
     res.status(200).json(users);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -28,12 +40,13 @@ module.exports.getOneUser = async (req, res) => {
   }
 };
 module.exports.updateUser = async (req, res) => {
+  const { paiementId, prix } = req.body;
+  const userId = req.params.id;
   try {
-    const { prix } = req.body;
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
-      { prix },
-      { new: true }
+    const updatedUser = await Users.findByIdAndUpdate(
+      userId,
+      { $set: { "paiements.$[paiement].prix": prix } },
+      { arrayFilters: [{ "paiement._id": paiementId }], new: true }
     );
     res.status(200).json(updatedUser);
   } catch (error) {
@@ -41,7 +54,6 @@ module.exports.updateUser = async (req, res) => {
   }
 };
 module.exports.addUser = async (req, res) => {
-  // const mois = req.body.mois;
   try {
     const newUser = new Users({ ...req.body });
     newUser

@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import "./AjouterPersonne.css";
+import UidContext from "./AppContent";
 
 const AddUSER = () => {
+  const Uid = useContext(UidContext);
   const [newUser, setNewUser] = useState({
     nom: "",
-    prix: "",
+    telephone: "",
   });
 
   const [error, setError] = useState("");
@@ -28,14 +30,15 @@ const AddUSER = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Vérifier si tous les champs sont remplis
-    if (!newUser.nom || !newUser.prix) {
+    if (!newUser.nom || !newUser.telephone) {
       setError("Veuillez remplir tous les champs");
       return;
     }
     try {
       const DATAS = {
         nom: newUser.nom,
-        prix: newUser.prix,
+        telephone: newUser.telephone,
+        admin: Uid,
       };
 
       await fetch(`${LOCAL}/wifi/user/adduser`, {
@@ -52,7 +55,7 @@ const AddUSER = () => {
           // Réinitialiser le formulaire
           setNewUser({
             nom: "",
-            prix: "",
+            telephone: "",
           });
 
           setShowToast(true); // Afficher le toast après succès
@@ -103,12 +106,13 @@ const AddUSER = () => {
         <div className="form-group">
           <label htmlFor="prix">Telephone:</label>
           <input
-            type="number"
-            id="prix"
-            name="prix"
-            value={newUser.prix}
+            type="tel"
+            id="telephone"
+            name="telephone"
+            pattern="[0-9]{9}"
+            placeholder="EX:06 606 66 66"
+            value={newUser.telephone}
             onChange={handleChange}
-            min="0"
             required
           />
         </div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./FormConnexion.css";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -25,8 +26,9 @@ const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
+    <form className="form-container" onSubmit={handleSubmit}>
+      <div className="form-title">Connexion</div>
+      <div className="form-group">
         <label>Email:</label>
         <input
           type="email"
@@ -35,7 +37,7 @@ const LoginForm = () => {
           required
         />
       </div>
-      <div>
+      <div className="form-group">
         <label>Password:</label>
         <input
           type="password"

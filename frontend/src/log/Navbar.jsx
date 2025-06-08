@@ -3,6 +3,8 @@ import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import UidContext from "../AppContent";
 import Logout from "./Logout";
+import "./Navbar.css";
+
 const Navbar = () => {
   const uid = useContext(UidContext);
   const useData = useSelector((state) => state.OneAdminReducer);
@@ -10,29 +12,20 @@ const Navbar = () => {
     <nav>
       {uid ? (
         <ul>
-          <li>WIFI</li>
+          <li>WiFiManager</li>
           <li className="welcome">
-            <NavLink to="">
-              {useData.nom ? `bienvenue ${useData.nom}` : null}
-            </NavLink>
+            {useData.nom ? `Bienvenue, ${useData.nom}` : null}
           </li>
-          {<Logout />}
+
+          <Logout />
         </ul>
       ) : (
         <ul>
-          <li>WIFI</li>
-          <li>
-            <NavLink to="/home">
-              {/* {
-                <img
-                  src="https://www.svgrepo.com/show/71656/wifi-sign.svg"
-                  alt="login"
-                  style={{ width: "20px", height: "20px" }}
-                />
-              } */}
-              <h3>Login</h3>
-            </NavLink>
-          </li>
+          <li>WiFiManager</li>
+
+          <NavLink to="/home" className="nav-login-btn">
+            Login
+          </NavLink>
         </ul>
       )}
     </nav>
