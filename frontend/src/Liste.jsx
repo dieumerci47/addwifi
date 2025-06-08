@@ -38,6 +38,8 @@ const ListeUSER = () => {
   const [emailAdmin, setEmailAdmin] = useState("");
   const [pwdAdmin, setPwdAdmin] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const URL = "https://addwifi.onrender.com";
+  const LOCAL = "http://localhost:5000";
 
   const DATA = {
     mois,
@@ -45,7 +47,7 @@ const ListeUSER = () => {
   };
   let GetDATA = async (data) => {
     try {
-      const response = await fetch("https://addwifi.onrender.com/wifi/user", {
+      const response = await fetch(`${LOCAL}/wifi/user`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -141,19 +143,16 @@ const ListeUSER = () => {
 
     try {
       // Vérifier les identifiants admin
-      const adminResponse = await fetch(
-        "https://addwifi.onrender.com/wifi/admin",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: emailAdmin,
-            password: pwdAdmin,
-          }),
-        }
-      );
+      const adminResponse = await fetch(`${LOCAL}/wifi/admin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: emailAdmin,
+          password: pwdAdmin,
+        }),
+      });
 
       if (!adminResponse.ok) {
         throw new Error("Identifiants administrateur incorrects");
@@ -164,7 +163,7 @@ const ListeUSER = () => {
       if (adminResult.response) {
         // Si admin validé, procéder à la mise à jour
         const updateResponse = await fetch(
-          `https://addwifi.onrender.com/wifi/user/${selectedUser._id}`,
+          `${LOCAL}/wifi/user/${selectedUser._id}`,
           {
             method: "PUT",
             headers: {
@@ -248,6 +247,9 @@ const ListeUSER = () => {
       <div className="actions-container">
         <button className="add-button">
           <Link to="/add">Ajouter une personne</Link>
+        </button>
+        <button className="add-buttons">
+          <Link to="/paiement">Paiement</Link>
         </button>
 
         <div className="filters">

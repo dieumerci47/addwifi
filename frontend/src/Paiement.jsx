@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./AjouterPersonne.css";
-
-const AddUSER = () => {
+const Paiement = () => {
   const [newUser, setNewUser] = useState({
     nom: "",
     prix: "",
+    mois: "",
+    annee: "",
   });
 
   const [error, setError] = useState("");
 
   const [showToast, setShowToast] = useState(false);
-  // const URL = "https://addwifi.onrender.com";
+  //const URL = "https://addwifi.onrender.com";
   const LOCAL = "http://localhost:5000";
 
   // Effet pour gérer la disparition automatique du toast
@@ -25,43 +26,64 @@ const AddUSER = () => {
     return () => clearTimeout(timer);
   }, [showToast]);
 
-  const handleSubmit = async (e) => {
+  // Obtenir le mois actuel
+  const currentDate = new Date();
+  const currentMth = currentDate.getMonth();
+
+  // Créer un tableau de mois disponibles jusqu'au mois actuel
+  const availableMonths = Array.from({ length: currentMth + 2 }, (_, index) => {
+    const date = new Date(2024, index);
+    return new Intl.DateTimeFormat("fr-FR", { month: "long" })
+      .format(date)
+      .toUpperCase();
+  });
+
+  const handleSubmit = (e) => {
     e.preventDefault();
     // Vérifier si tous les champs sont remplis
-    if (!newUser.nom || !newUser.prix) {
+    if (!newUser.nom || !newUser.prix || !newUser.mois || !newUser.annee) {
       setError("Veuillez remplir tous les champs");
       return;
     }
+    // setShowAdminModal(true);
+    handleAdminSubmit();
+  };
+
+  const handleAdminSubmit = async (e) => {
+    e.preventDefault();
+
     try {
       const DATAS = {
         nom: newUser.nom,
         prix: newUser.prix,
+        mois: newUser.mois.toLowerCase(),
+        annee: newUser.annee,
       };
 
-      await fetch(`${LOCAL}/wifi/user/adduser`, {
+      await fetch(`${LOCAL}/wifi/adduser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(DATAS),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          setError("");
-          // Réinitialiser le formulaire
-          setNewUser({
-            nom: "",
-            prix: "",
-          });
+      });
+      // Ici vous pourrez ajouter la logique pour sauvegarder les données
+      console.log("Nouvelle personne :", newUser);
+      setError("");
+      // Réinitialiser le formulaire
+      setNewUser({
+        nom: "",
+        prix: "",
+        mois: "",
+        annee: "",
+      });
 
-          setShowToast(true); // Afficher le toast après succès
-        });
+      setShowToast(true); // Afficher le toast après succès
 
       // setData(result);
     } catch (err) {
       console.error("Erreur lors de la récupération des données:", err);
-      setError(err.message);
+      setError("Identifiants administrateur incorrects");
     } finally {
       // setLoading(false);
     }
@@ -79,7 +101,7 @@ const AddUSER = () => {
   return (
     <div className="form-container">
       <div className="header-container">
-        <h2>Ajouter une Personne</h2>
+        <h2>Paiement</h2>
         <Link to="/" className="back-button">
           Retour à la liste
         </Link>
@@ -101,7 +123,7 @@ const AddUSER = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="prix">Telephone:</label>
+          <label htmlFor="prix">Prix:</label>
           <input
             type="number"
             id="prix"
@@ -111,6 +133,42 @@ const AddUSER = () => {
             min="0"
             required
           />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="mois">Mois:</label>
+          <select
+            id="mois"
+            name="mois"
+            value={newUser.mois}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Sélectionnez un mois</option>
+            {availableMonths.map((mois) => (
+              <option key={mois} value={mois}>
+                {mois}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="annee">Année:</label>
+          <select
+            id="annee"
+            name="annee"
+            value={newUser.annee}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Sélectionnez une année</option>
+            {[2025].map((annee) => (
+              <option key={annee} value={annee}>
+                {annee}
+              </option>
+            ))}
+          </select>
         </div>
 
         <button type="submit">Ajouter</button>
@@ -136,4 +194,4 @@ const AddUSER = () => {
   );
 };
 
-export default AddUSER;
+export default Paiement;
