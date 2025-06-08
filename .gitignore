@@ -5,3 +5,4 @@ BackMongo/node_modules
 BackMongo/.env
 frontend/node_modules
 frontend/.gitignore
+.qodo

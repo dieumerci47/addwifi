@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Liste.css";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllUsers } from "../action/UsersAction";
 
 const ListeUSER = () => {
   const currentDate = new Date();
@@ -21,233 +23,170 @@ const ListeUSER = () => {
     "DÉCEMBRE",
   ];
 
-  // Données des utilisateurs
-  const [data, setData] = useState([]);
-  const [mois, setMois] = useState("");
-  const [annee, setAnne] = useState("");
+  // Filtres affichés dans les selects (contrôlés, mais non appliqués tant que "VOIR" n'est pas cliqué)
+  const [moisSelect, setMoisSelect] = useState("");
+  const [anneeSelect, setAnneeSelect] = useState("");
+
+  // Filtres réellement appliqués
+  const [mois, setMois] = useState(allMoth[currentMth]);
+  const [annee, setAnne] = useState(currentYear);
+
+  // Données à afficher
+  const [filteredPaiements, setFilteredPaiements] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [debut, setDebut] = useState(true);
 
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [editedPrice, setEditedPrice] = useState("");
+  // Popup modification prix
+  const [selectedPaiement, setSelectedPaiement] = useState(null);
+  const [newPrice, setNewPrice] = useState("");
   const [editLoading, setEditLoading] = useState(false);
   const [editError, setEditError] = useState("");
 
-  const [showAdminModal, setShowAdminModal] = useState(false);
-  const [emailAdmin, setEmailAdmin] = useState("");
-  const [pwdAdmin, setPwdAdmin] = useState("");
+  // Toast
   const [showToast, setShowToast] = useState(false);
 
-  const DATA = {
-    mois,
-    annee,
-  };
-  let GetDATA = async (data) => {
-    try {
-      const response = await fetch("https://addwifi.onrender.com/wifi/user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+  // Redux
+  const Uid = useSelector((state) => state.OneAdminReducer._id);
+  const dispatch = useDispatch();
+  const USERS = useSelector((state) => state.UsersReducer);
 
-      if (!response.ok) {
-        setDebut(false);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+  // Récupérer les utilisateurs de l'admin courant
+  const users =
+    USERS.length > 0 ? USERS.filter((user) => user.admin === Uid) : [];
 
-      const result = await response.json();
-      setDebut(false);
-      setData(result);
-    } catch (err) {
-      console.error("Erreur lors de la récupération des données:", err);
-      setError(
-        "Erreur lors de la récupération des données. Veuillez réessayer."
-      );
-      setDebut(false);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Créer un tableau de mois disponibles en utilisant Intl.DateTimeFormat
+  // Récupérer tous les mois disponibles jusqu'au mois actuel
   const availableMonths = Array.from({ length: currentMth + 2 }, (_, index) => {
     const date = new Date(currentYear, index);
     return new Intl.DateTimeFormat("fr-FR", { month: "long" })
       .format(date)
       .toUpperCase();
   });
-  const dataDebut = { mois: allMoth[currentMth], annee: currentYear };
-  useEffect(() => {
-    /*     setMois(availableMonths[availableMonths.length - 1]);
-    setAnne(currentYear); */
 
-    GetDATA(dataDebut);
-  }, []);
+  // Récupérer les années (cette année et l'année prochaine)
   const years = [];
   for (let year = currentYear; year <= currentYear + 1; year++) {
     years.push(year);
   }
-  const HANDLECLICK = async () => {
-    if (!mois || !annee) {
-      setError("Veuillez sélectionner un mois et une année");
-      console.log();
 
-      return;
-    }
-    setDebut(true);
-    setLoading(true);
-    setError("");
-
-    GetDATA(DATA);
+  // Fonction pour filtrer les paiements selon le mois et l'année
+  const filterPaiements = (moisFiltre, anneeFiltre) => {
+    let paiements = [];
+    users.forEach((user) => {
+      if (user.paiements && Array.isArray(user.paiements)) {
+        user.paiements.forEach((paiement) => {
+          if (
+            paiement.mois &&
+            paiement.annee &&
+            paiement.mois.toUpperCase() === moisFiltre &&
+            String(paiement.annee) === String(anneeFiltre)
+          ) {
+            paiements.push({
+              ...paiement,
+              nom: user.nom,
+              userId: user._id,
+            });
+          }
+        });
+      }
+    });
+    return paiements;
   };
 
-  const handleRowClick = (user) => {
-    setSelectedUser(user);
-    setEditedPrice(user.prix);
+  // Premier chargement : paiements du mois et année en cours
+  useEffect(() => {
+    dispatch(getAllUsers());
+  }, [dispatch]);
+
+  // Appliquer le filtre quand mois/annee changent (mais pas lors de la sélection dans le select)
+  useEffect(() => {
+    setLoading(true);
+    setError("");
+    const paiements = filterPaiements(mois, annee);
+    setFilteredPaiements(paiements);
+    setLoading(false);
+  }, [USERS, Uid, mois, annee]);
+
+  // Quand on clique sur "VOIR"
+  const handleVoir = () => {
+    if (!moisSelect || !anneeSelect) {
+      setError("Veuillez sélectionner un mois et une année");
+      return;
+    }
+    setError("");
+    setMois(moisSelect);
+    setAnne(anneeSelect);
+  };
+
+  // Calcul du total
+  const total = filteredPaiements.reduce(
+    (acc, paiement) => acc + Number(paiement.prix),
+    0
+  );
+
+  // Gérer la modification du prix
+  const handleRowClick = (paiement) => {
+    setSelectedPaiement(paiement);
+    setNewPrice(paiement.prix);
     setEditError("");
   };
 
-  // Effet pour gérer la disparition automatique du toast
-  useEffect(() => {
-    let timer;
-    if (showToast) {
-      timer = setTimeout(() => {
-        setShowToast(false);
-      }, 3000);
-    }
-    return () => clearTimeout(timer);
-  }, [showToast]);
-
-  const handleUpdatePrice = async () => {
-    if (!editedPrice) {
+  const handleEditPrice = async (e) => {
+    e.preventDefault();
+    if (!newPrice) {
       setEditError("Veuillez entrer un prix");
       return;
     }
-    setShowAdminModal(true);
-  };
-
-  const handleAdminSubmit = async (e) => {
-    e.preventDefault();
-    if (!emailAdmin || !pwdAdmin) {
-      setEditError("Veuillez remplir tous les champs administrateur");
-      return;
-    }
-
     setEditLoading(true);
     setEditError("");
-
     try {
-      // Vérifier les identifiants admin
-      const adminResponse = await fetch(
-        "https://addwifi.onrender.com/wifi/admin",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: emailAdmin,
-            password: pwdAdmin,
-          }),
-        }
+      // Appel API pour modifier le prix (à adapter selon ton backend)
+      const LOCAL = "http://localhost:5000";
+      console.log(selectedPaiement.userId);
+      const res = await fetch(`${LOCAL}/wifi/user/${selectedPaiement.userId}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: selectedPaiement.userId,
+          paiementId: selectedPaiement._id,
+          prix: Number(newPrice),
+        }),
+      });
+      if (!res.ok) throw new Error("Erreur lors de la modification");
+      // Met à jour localement
+      setFilteredPaiements((prev) =>
+        prev.map((p) =>
+          p._id === selectedPaiement._id ? { ...p, prix: Number(newPrice) } : p
+        )
       );
-
-      if (!adminResponse.ok) {
-        throw new Error("Identifiants administrateur incorrects");
-      }
-
-      const adminResult = await adminResponse.json();
-
-      if (adminResult.response) {
-        // Si admin validé, procéder à la mise à jour
-        const updateResponse = await fetch(
-          `https://addwifi.onrender.com/wifi/user/${selectedUser._id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              prix: Number(editedPrice),
-              id: selectedUser._id,
-            }),
-          }
-        );
-
-        if (!updateResponse.ok) {
-          throw new Error(`HTTP error! status: ${updateResponse.status}`);
-        }
-
-        // Mettre à jour les données localement
-        setData(
-          data.map((user) =>
-            user._id === selectedUser._id
-              ? { ...user, prix: Number(editedPrice) }
-              : user
-          )
-        );
-
-        // Réinitialiser les états
-        setShowAdminModal(false);
-        setSelectedUser(null);
-        setEditedPrice("");
-        setEmailAdmin("");
-        setPwdAdmin("");
-        setShowToast(true);
-      }
-    } catch (err) {
-      console.error("Erreur:", err);
-      setEditError(err.message);
+      setSelectedPaiement(null);
+      setNewPrice("");
+      setShowToast(true);
+    } catch {
+      setEditError("Erreur lors de la modification");
     } finally {
       setEditLoading(false);
     }
   };
 
+  // Gestion de la disparition automatique du toast
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => setShowToast(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
+
   return (
     <div className="liste-container">
-      <h1>Liste Des Personnes Qui Ont Participé Au WIFIXS</h1>
-
-      {selectedUser && (
-        <div className="edit-container">
-          <h3>Modifier le prix pour {selectedUser.nom.toUpperCase()}</h3>
-          {editError && <div className="error-message">{editError}</div>}
-          <div className="edit-form">
-            <input
-              type="number"
-              value={editedPrice}
-              onChange={(e) => setEditedPrice(e.target.value)}
-              placeholder="Nouveau prix"
-              min="0"
-            />
-            <div className="edit-buttons">
-              <button
-                onClick={handleUpdatePrice}
-                disabled={editLoading}
-                className="update-button"
-              >
-                {editLoading ? "Modification..." : "Valider"}
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedUser(null);
-                  setEditedPrice("");
-                  setEditError("");
-                }}
-                className="cancel-button"
-              >
-                Annuler
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <h1>Liste Des Paiements WiFi</h1>
 
       <div className="actions-container">
         <button className="add-button">
           <Link to="/add">Ajouter une personne</Link>
+        </button>
+        <button className="add-buttons">
+          <Link to="/paiement">Paiement</Link>
         </button>
 
         <div className="filters">
@@ -255,9 +194,8 @@ const ListeUSER = () => {
             name="mois"
             id="mois"
             className="select-filter"
-            value={mois}
-            onChange={(e) => setMois(e.target.value)}
-            required
+            value={moisSelect}
+            onChange={(e) => setMoisSelect(e.target.value)}
           >
             <option value="">Sélectionnez un mois</option>
             {availableMonths.map((mois, index) => (
@@ -270,9 +208,8 @@ const ListeUSER = () => {
             name="annee"
             id="anne"
             className="select-filter"
-            value={annee}
-            onChange={(e) => setAnne(e.target.value)}
-            required
+            value={anneeSelect}
+            onChange={(e) => setAnneeSelect(e.target.value)}
           >
             <option value="">Sélectionnez une année</option>
             {years.map((year, index) => (
@@ -283,7 +220,7 @@ const ListeUSER = () => {
           </select>
           <button
             className="voir-button"
-            onClick={HANDLECLICK}
+            onClick={handleVoir}
             disabled={loading}
           >
             {loading ? "Chargement..." : "VOIR"}
@@ -293,9 +230,9 @@ const ListeUSER = () => {
 
       {error && <div className="error-message">{error}</div>}
 
-      {debut ? (
-        <p className="no-datas">Chargement</p>
-      ) : data.length > 0 ? (
+      {loading ? (
+        <p className="no-datas">Chargement...</p>
+      ) : filteredPaiements.length > 0 ? (
         <table className="data-table">
           <thead>
             <tr>
@@ -307,32 +244,30 @@ const ListeUSER = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((personne, index) => (
+            {filteredPaiements.map((paiement, index) => (
               <tr
-                key={personne._id}
-                onClick={() => handleRowClick(personne)}
-                className={
-                  selectedUser?._id === personne._id ? "selected-row" : ""
+                key={
+                  paiement.userId + "-" + paiement.mois + "-" + paiement.annee
                 }
+                onClick={() => handleRowClick(paiement)}
+                style={{ cursor: "pointer" }}
               >
                 <td>{index + 1}</td>
-                <td>{personne.nom.toUpperCase()}</td>
-                <td>{personne.prix}</td>
-                <td>{personne.mois.toUpperCase()}</td>
-                <td>{personne.annee}</td>
+                <td>{paiement.nom.toUpperCase()}</td>
+                <td>{paiement.prix}</td>
+                <td>{paiement.mois.toUpperCase()}</td>
+                <td>{paiement.annee}</td>
               </tr>
             ))}
           </tbody>
           <tfoot>
             <tr>
               <td>
-                <strong>Nbre: {data.length}</strong>
+                <strong>Nbre: {filteredPaiements.length}</strong>
               </td>
               <td></td>
               <td>
-                <strong>
-                  Total: {data.reduce((acc, current) => acc + current.prix, 0)}
-                </strong>
+                <strong>Total: {total}</strong>
               </td>
               <td></td>
               <td></td>
@@ -340,63 +275,10 @@ const ListeUSER = () => {
           </tfoot>
         </table>
       ) : (
-        !error &&
-        !loading && <p className="no-data">Aucune donnée à afficher</p>
+        !error && <p className="no-data">Aucune donnée à afficher</p>
       )}
 
-      {showAdminModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>Confirmation Administrateur</h3>
-            {editError && <div className="error-message">{editError}</div>}
-            <form onSubmit={handleAdminSubmit}>
-              <div className="form-group">
-                <label htmlFor="username">Email:</label>
-                <input
-                  type="text"
-                  id="username"
-                  value={emailAdmin}
-                  onChange={(e) => {
-                    setEmailAdmin(e.target.value);
-                    setEditError("");
-                  }}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="password">Mot de passe:</label>
-                <input
-                  type="password"
-                  id="password"
-                  value={pwdAdmin}
-                  onChange={(e) => {
-                    setPwdAdmin(e.target.value);
-                    setEditError("");
-                  }}
-                  required
-                />
-              </div>
-              <div className="modal-buttons">
-                <button type="submit" disabled={editLoading}>
-                  {editLoading ? "Validation..." : "Confirmer"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowAdminModal(false);
-                    setEmailAdmin("");
-                    setPwdAdmin("");
-                    setEditError("");
-                  }}
-                >
-                  Annuler
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
+      {/* Toast de succès */}
       {showToast && (
         <div className="toast-container">
           <div className="toast success">
@@ -404,10 +286,40 @@ const ListeUSER = () => {
               <i className="check-icon">✓</i>
               <div className="message">
                 <span className="text text-1">Succès</span>
-                <span className="text text-2">Prix modifié avec succès!</span>
+                <span className="text text-2">Prix modifié avec succès !</span>
               </div>
             </div>
             <div className="progress"></div>
+          </div>
+        </div>
+      )}
+
+      {/* Popup modification prix */}
+      {selectedPaiement && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Modifier le prix pour {selectedPaiement.nom.toUpperCase()}</h3>
+            {editError && <div className="error-message">{editError}</div>}
+            <form onSubmit={handleEditPrice}>
+              <div className="form-group">
+                <label>Nouveau prix :</label>
+                <input
+                  type="number"
+                  value={newPrice}
+                  onChange={(e) => setNewPrice(e.target.value)}
+                  min="0"
+                  required
+                />
+              </div>
+              <div className="modal-buttons">
+                <button type="submit" disabled={editLoading}>
+                  {editLoading ? "Modification..." : "Valider"}
+                </button>
+                <button type="button" onClick={() => setSelectedPaiement(null)}>
+                  Annuler
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
