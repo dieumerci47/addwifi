@@ -21,11 +21,16 @@ mongoose
 app.use(express.json());
 app.use(cookieParser());
 // Middleware
+const allowedOrigins = ["http://localhost:5173", "https://wifiadd.netlify.app"];
 const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
-  origin: ["http://localhost:5173", "https://wifiadd.netlify.app"], // Utilisez une seule valeur
-  credentials: true,
-  allowedHeaders: ["Content-Type", "Authorization"],
 };
 app.use(cors(corsOptions));
 
