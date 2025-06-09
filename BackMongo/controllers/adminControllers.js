@@ -4,6 +4,7 @@ const ObjectID = require("mongoose").Types.ObjectId;
 module.exports.getAllAdmin = async (req, res) => {
   try {
     await Admin.find()
+      .select("-password")
       .then((admin) => {
         res.status(200).json(admin);
       })

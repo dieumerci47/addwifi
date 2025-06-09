@@ -24,7 +24,7 @@ const Paiement = () => {
   });
 
   const [error, setError] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const URL = "https://addwifi.onrender.com";
   // const LOCAL = "http://localhost:5000";
@@ -54,18 +54,18 @@ const Paiement = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Vérifier si tous les champs sont remplis
+    setError("");
     if (!newUser.nom || !newUser.prix || !newUser.mois || !newUser.annee) {
       setError("Veuillez remplir tous les champs");
       return;
     }
-    // setShowAdminModal(true);
     handleAdminSubmit(e);
   };
 
   const handleAdminSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
+    setError("");
     try {
       const DATAS = {
         userId: newUser.userId,
@@ -82,29 +82,24 @@ const Paiement = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(DATAS),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          console.log(res);
-          // Ici vous pourrez ajouter la logique pour sauvegarder les données
-          setError("");
-          // Réinitialiser le formulaire
-          setNewUser({
-            userId: "",
-            prix: "",
-            mois: "",
-            annee: "",
-          });
-
-          setShowToast(true); // Afficher le toast après succès
+      }).then(async (res) => {
+        const data = await res.json();
+        if (!res.ok || data.error) {
+          throw new Error(data.message || "Erreur lors de l'ajout du paiement");
+        }
+        setError("");
+        setNewUser({
+          userId: "",
+          prix: "",
+          mois: "",
+          annee: "",
         });
-
-      // setData(result);
+        setShowToast(true);
+      });
     } catch (err) {
-      console.error("Erreur lors de la récupération des données:", err);
-      setError("Identifiants administrateur incorrects");
+      setError(err.message || "Erreur lors de l'ajout du paiement");
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -161,14 +156,6 @@ const Paiement = () => {
               )}
             </select>
           }
-          {/*  <input
-              type="text"
-              id="nom"
-              name="nom"
-              value={newUser.nom}
-              onChange={handleChange}
-              required
-            /> */}
         </div>
 
         <div className="form-group">
@@ -220,7 +207,9 @@ const Paiement = () => {
           </select>
         </div>
 
-        <button type="submit">Ajouter</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "En cours..." : "Ajouter"}
+        </button>
       </form>
 
       {showToast && (

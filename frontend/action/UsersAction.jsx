@@ -11,7 +11,6 @@ export const getAllUsers = () => async (dispatch) => {
   })
     .then((res) => res.json())
     .then((res) => {
-      console.log(res);
       dispatch({ type: GET_ALL_USERS, payload: res });
     })
     .catch((err) => console.log(err));

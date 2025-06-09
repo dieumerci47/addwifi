@@ -140,9 +140,10 @@ const ListeUSER = () => {
     setEditError("");
     try {
       // Appel API pour modifier le prix (à adapter selon ton backend)
-      const LOCAL = "http://localhost:5000";
+      const URL = "https://addwifi.onrender.com";
+      // const LOCAL = "http://localhost:5000";
       console.log(selectedPaiement.userId);
-      const res = await fetch(`${LOCAL}/wifi/user/${selectedPaiement.userId}`, {
+      const res = await fetch(`${URL}/wifi/user/${selectedPaiement.userId}`, {
         method: "PUT",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

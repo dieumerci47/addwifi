@@ -11,7 +11,7 @@ const AddUSER = () => {
   });
 
   const [error, setError] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const URL = "https://addwifi.onrender.com";
   // const LOCAL = "http://localhost:5000";
@@ -29,9 +29,11 @@ const AddUSER = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Vérifier si tous les champs sont remplis
+    setError("");
+    setLoading(true);
     if (!newUser.nom || !newUser.telephone) {
       setError("Veuillez remplir tous les champs");
+      setLoading(false);
       return;
     }
     try {
@@ -43,30 +45,27 @@ const AddUSER = () => {
 
       await fetch(`${URL}/wifi/user/adduser`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(DATAS),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          setError("");
-          // Réinitialiser le formulaire
-          setNewUser({
-            nom: "",
-            telephone: "",
-          });
-
-          setShowToast(true); // Afficher le toast après succès
+      }).then(async (res) => {
+        const data = await res.json();
+        if (!res.ok || data.error) {
+          throw new Error(data.message || "Erreur lors de l'ajout");
+        }
+        setError("");
+        setNewUser({
+          nom: "",
+          telephone: "",
         });
-
-      // setData(result);
+        setShowToast(true);
+      });
     } catch (err) {
-      console.error("Erreur lors de la récupération des données:", err);
-      setError(err.message);
+      setError(err.message || "Erreur lors de l'ajout");
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -117,7 +116,9 @@ const AddUSER = () => {
           />
         </div>
 
-        <button type="submit">Ajouter</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "En cours..." : "Ajouter"}
+        </button>
       </form>
 
       {showToast && (
