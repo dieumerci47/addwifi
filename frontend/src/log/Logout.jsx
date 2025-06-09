@@ -1,15 +1,15 @@
 import cookie from "js-cookie";
 import { NavLink } from "react-router-dom";
 const Logout = () => {
-  //const URL = "https://addwifi.onrender.com";
-  const LOCAL = "http://localhost:5000";
+  const URL = "https://addwifi.onrender.com";
+  // const LOCAL = "http://localhost:5000";
   const removeCookie = (key) => {
     if (window !== "undefined") {
       cookie.remove(key, { expires: 1 });
     }
   };
   const logout = async () => {
-    await fetch(`${LOCAL}/wifi/login/logout`, {
+    await fetch(`${URL}/wifi/login/logout`, {
       method: "POST",
       credentials: "include",
     })

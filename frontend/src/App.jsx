@@ -7,13 +7,13 @@ import { getOneAdmin } from "../action/OneAdminAction";
 import Routes from "./routes/routes";
 
 function App() {
-  //const URL = "https://addwifi.onrender.com";
-  const LOCAL = "http://localhost:5000";
+  const URL = "https://addwifi.onrender.com";
+  // const LOCAL = "http://localhost:5000";
   const [uid, setUid] = useState(null);
   const dispatch = useDispatch();
   useEffect(() => {
     const FetchData = async () => {
-      await fetch(`${LOCAL}/jwtid`, {
+      await fetch(`${URL}/jwtid`, {
         method: "GET",
         credentials: "include",
         headers: {
