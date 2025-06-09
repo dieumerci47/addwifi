@@ -9,8 +9,6 @@ let CreateToken = (id) => {
 };
 module.exports.signup = (req, res) => {
   const admin = new Admin({ ...req.body });
-  console.log({ ...req.body });
-
   admin
     .save()
     .then((user) => {

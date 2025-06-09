@@ -22,8 +22,6 @@ function App() {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log("ID réçu depuis /jwtid : " + data);
-
           setUid(data);
           // setUid("68439cd6bd7aa52609882df3");
         })

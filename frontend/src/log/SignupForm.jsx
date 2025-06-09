@@ -7,11 +7,14 @@ const SignupForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [formSubmit, setFormSubmit] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const URL = "https://addwifi.onrender.com";
   // const LOCAL = "http://localhost:5000";
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Logique d'inscription ici
+    setError("");
+    setLoading(true);
     const admin = { nom, email, password };
     fetch(`${URL}/wifi/login/signup`, {
       method: "POST",
@@ -21,10 +24,22 @@ const SignupForm = () => {
         "Content-Type": "application/json",
       },
     })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok || data) {
+          if (data.keyValue.email) {
+            throw new Error("Email déjà utilisé");
+          } else {
+            throw new Error(data || "Erreur d'inscription");
+          }
+        }
         setFormSubmit(true);
+      })
+      .catch((err) => {
+        setError(err.message || "Erreur d'inscription");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -39,6 +54,7 @@ const SignupForm = () => {
       ) : (
         <form className="form-container" onSubmit={handleSubmit}>
           <div className="form-title">Créer un compte</div>
+          {error && <div className="error-message">{error}</div>}
           <div className="form-group">
             <label>Nom:</label>
             <input
@@ -46,6 +62,7 @@ const SignupForm = () => {
               value={nom}
               onChange={(e) => setNom(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
           <div className="form-group">
@@ -55,6 +72,7 @@ const SignupForm = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
           <div className="form-group">
@@ -64,9 +82,12 @@ const SignupForm = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
-          <button type="submit">Sign Up</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "En cours..." : "Créer un compte"}
+          </button>
         </form>
       )}
     </>

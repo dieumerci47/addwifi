@@ -12,7 +12,6 @@ const AdminAction = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log("res", res);
         dispatch({ type: GET_ALL_ADMIN, payload: res });
       })
       .catch((err) => console.log(err));

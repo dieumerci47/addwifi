@@ -6,11 +6,11 @@ import { Provider } from "react-redux";
 import { applyMiddleware, createStore } from "redux";
 import { thunk } from "redux-thunk";
 
-import logger from "redux-logger";
+// import logger from "redux-logger";
 import rootReducer from "../reducer/rootReducer.jsx";
 import AdminAction from "../action/AdminAction.jsx";
 
-const store = createStore(rootReducer, applyMiddleware(thunk, logger));
+const store = createStore(rootReducer, applyMiddleware(thunk));
 store.dispatch(AdminAction());
 
 createRoot(document.getElementById("root")).render(

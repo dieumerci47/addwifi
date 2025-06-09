@@ -5,7 +5,6 @@ module.exports.Auth = (req, res, next) => {
     const token = req.cookies.jwt;
     const decodetoken = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decodetoken.userId;
-    console.log("connecté " + userId);
     req.auth = { userId: userId };
     res.status(200);
     next();

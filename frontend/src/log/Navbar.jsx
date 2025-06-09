@@ -14,7 +14,7 @@ const Navbar = () => {
         <ul>
           <li>WiFiManager</li>
           <li className="welcome">
-            {useData.nom ? `Bienvenue, ${useData.nom}` : null}
+            {useData.nom ? `Bienvenue, ${useData.nom.toUpperCase()}` : null}
           </li>
 
           <Logout />
