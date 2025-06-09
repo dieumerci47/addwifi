@@ -26,8 +26,8 @@ const Paiement = () => {
   const [error, setError] = useState("");
 
   const [showToast, setShowToast] = useState(false);
-  //const URL = "https://addwifi.onrender.com";
-  const LOCAL = "http://localhost:5000";
+  const URL = "https://addwifi.onrender.com";
+  // const LOCAL = "http://localhost:5000";
 
   // Effet pour gérer la disparition automatique du toast
   useEffect(() => {
@@ -75,7 +75,7 @@ const Paiement = () => {
         annee: newUser.annee,
       };
 
-      await fetch(`${LOCAL}/wifi/admin/payment`, {
+      await fetch(`${URL}/wifi/admin/payment`, {
         method: "POST",
         credentials: "include",
         headers: {

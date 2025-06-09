@@ -7,13 +7,13 @@ const SignupForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [formSubmit, setFormSubmit] = useState(false);
-  //const URL = "https://addwifi.onrender.com";
-  const LOCAL = "http://localhost:5000";
+  const URL = "https://addwifi.onrender.com";
+  // const LOCAL = "http://localhost:5000";
   const handleSubmit = (e) => {
     e.preventDefault();
     // Logique d'inscription ici
     const admin = { nom, email, password };
-    fetch(`${LOCAL}/wifi/login/signup`, {
+    fetch(`${URL}/wifi/login/signup`, {
       method: "POST",
       body: JSON.stringify(admin),
       credentials: "include",

@@ -1,9 +1,9 @@
 export const GET_ALL_ADMIN = "GET_ALL_ADMIN";
-//const URL = "https://addwifi.onrender.com";
-const LOCAL = "http://localhost:5000";
+const URL = "https://addwifi.onrender.com";
+// const LOCAL = "http://localhost:5000";
 const AdminAction = () => {
   return async (dispatch) => {
-    return await fetch(`${LOCAL}/wifi/admin`, {
+    return await fetch(`${URL}/wifi/admin`, {
       method: "GET",
       //  credentials: "include",
       headers: {

@@ -1,11 +1,11 @@
 export const GET_ONE_ADMIN = "GET_ONE_ADMIN";
-//const URL = "https://addwifi.onrender.com";
-const LOCAL = "http://localhost:5000";
+const URL = "https://addwifi.onrender.com";
+// const LOCAL = "http://localhost:5000";
 export const getOneAdmin = (uid) => {
   console.log("getOneAdmin uid : " + uid);
 
   return async (dispatch) => {
-    return await fetch(`${LOCAL}/wifi/admin/${uid}`, {
+    return await fetch(`${URL}/wifi/admin/${uid}`, {
       method: "GET",
       credentials: "include",
       headers: {

@@ -4,13 +4,13 @@ import "./FormConnexion.css";
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  //const URL = "https://addwifi.onrender.com";
-  const LOCAL = "http://localhost:5000";
+  const URL = "https://addwifi.onrender.com";
+  // const LOCAL = "http://localhost:5000";
   const handleSubmit = (e) => {
     e.preventDefault();
     // Logique de connexion ici
     const admin = { email, password };
-    fetch(`${LOCAL}/wifi/login/signin`, {
+    fetch(`${URL}/wifi/login/signin`, {
       method: "POST",
       body: JSON.stringify(admin),
       credentials: "include",
@@ -21,7 +21,7 @@ const LoginForm = () => {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        window.location.href = "/";
+        // window.location.href = "/";
       });
   };
 

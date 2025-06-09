@@ -35,10 +35,10 @@ module.exports.signin = (req, res, next) => {
             const token = CreateToken(user._id);
             res.cookie("jwt", token, {
               httpOnly: true,
-              // secure: false,
+              secure: true,
               /*  secure: "production",
                 sameSite: "Lax", */
-              sameSite: "Lax",
+              sameSite: "None",
               maxAge: maxAge,
               credentials: true,
               allowedHeaders: ["Content-Type", "Authorization"],
