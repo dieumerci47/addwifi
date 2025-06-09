@@ -34,12 +34,8 @@ module.exports.signin = (req, res, next) => {
             res.cookie("jwt", token, {
               httpOnly: true,
               secure: true,
-              /*  secure: "production",
-                sameSite: "Lax", */
               sameSite: "None",
               maxAge: maxAge,
-              credentials: true,
-              allowedHeaders: ["Content-Type", "Authorization"],
               path: "/",
             });
             res.status(200).json({ message: "token crée", _id: user._id });
