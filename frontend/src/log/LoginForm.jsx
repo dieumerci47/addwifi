@@ -23,8 +23,25 @@ const LoginForm = () => {
     })
       .then(async (res) => {
         const data = await res.json();
-        if (!res.ok || data.errors) {
-          throw new Error(data.errors || "Erreur de connexion");
+        if (!res.ok || data.errors || data.error) {
+          // Gestion de différents formats d'erreur
+          if (data && data.errors) {
+            throw new Error(
+              typeof data.errors === "string"
+                ? data.errors
+                : JSON.stringify(data.errors)
+            );
+          } else if (data && data.error) {
+            throw new Error(
+              typeof data.error === "string"
+                ? data.error
+                : JSON.stringify(data.error)
+            );
+          } else if (data && data.message) {
+            throw new Error(data.message);
+          } else {
+            throw new Error("Erreur de connexion");
+          }
         }
         window.location.href = "/";
       })

@@ -18,6 +18,7 @@ const Routess = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/paiement" element={<Paiement />} />
+          <Route path="*" element={<Home />} />
           {/* <Route path="/signin" element={<LoginForm />} />
           <Route path="/home" element={<Home />} />
           <Route path="/log" element={<Index Signup={false} Login={true} />} />

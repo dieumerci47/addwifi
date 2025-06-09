@@ -26,11 +26,13 @@ const SignupForm = () => {
     })
       .then(async (res) => {
         const data = await res.json();
-        if (!res.ok || data) {
-          if (data.keyValue.email) {
+        if (!res.ok || data.errors) {
+          if (data && data.keyValue && data.keyValue.email) {
             throw new Error("Email déjà utilisé");
+          } else if (data && data.errors) {
+            throw new Error(data.errors);
           } else {
-            throw new Error(data || "Erreur d'inscription");
+            throw new Error("Erreur d'inscription");
           }
         }
         setFormSubmit(true);
