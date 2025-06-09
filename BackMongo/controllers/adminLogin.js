@@ -58,6 +58,12 @@ module.exports.signin = (req, res, next) => {
 module.exports.logout = (req, res) => {
   console.log("Utilisateur deconnecté");
 
-  res.cookie("jwt", "", { httpOnly: true, maxAge: 1 });
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    maxAge: 1,
+    secure: true,
+    sameSite: "None",
+    credentials: true,
+  });
   res.status(200).json({ message: "Utilisateur deconnecté" });
 };

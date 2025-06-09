@@ -21,7 +21,7 @@ const LoginForm = () => {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        // window.location.href = "/";
+        window.location.href = "/";
       });
   };
 
