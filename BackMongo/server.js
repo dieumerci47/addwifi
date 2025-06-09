@@ -23,7 +23,7 @@ app.use(cookieParser());
 // Middleware
 const corsOptions = {
   credentials: true,
-  origin: "http://localhost:5173", // Utilisez une seule valeur
+  origin: ["http://localhost:5173", "https://wifiadd.netlify.app"], // Utilisez une seule valeur
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
 };
