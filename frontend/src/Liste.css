@@ -311,7 +311,9 @@ a {
 .update-button:hover {
   background-color: #45a049;
 }
-
+.annuler {
+  background-color: #dc3545;
+}
 .update-button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;

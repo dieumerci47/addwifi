@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import "./AjouterPersonne.css";
 import UidContext from "./AppContent";
+import { URL } from "./Tool";
 
 const AddUSER = () => {
   const Uid = useContext(UidContext);
@@ -13,7 +14,7 @@ const AddUSER = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const URL = "https://addwifi.onrender.com";
+  // const URL = "https://addwifi.onrender.com";
   // const LOCAL = "http://localhost:5000";
 
   // Effet pour gérer la disparition automatique du toast

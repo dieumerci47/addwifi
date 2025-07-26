@@ -1,6 +1,7 @@
 import { useState } from "react";
 import LoginForm from "./LoginForm";
 import "./FormConnexion.css";
+import { URL } from "../Tool";
 
 const SignupForm = () => {
   const [nom, setNom] = useState("");
@@ -9,7 +10,7 @@ const SignupForm = () => {
   const [formSubmit, setFormSubmit] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const URL = "https://addwifi.onrender.com";
+  // const URL = "https://addwifi.onrender.com";
   // const LOCAL = "http://localhost:5000";
   const handleSubmit = (e) => {
     e.preventDefault();

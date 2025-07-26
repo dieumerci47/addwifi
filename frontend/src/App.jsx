@@ -1,40 +1,47 @@
 import "./App.css";
-import UidContext from "./AppContent";
-
-import { useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import { getOneAdmin } from "../action/OneAdminAction";
 import Routes from "./routes/routes";
+import { SET_AUTHENTICATED } from "../action/AuthAction";
+import { URL } from "./Tool";
 
 function App() {
-  const URL = "https://addwifi.onrender.com";
-  // const LOCAL = "http://localhost:5000";
-  const [uid, setUid] = useState(null);
   const dispatch = useDispatch();
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+
   useEffect(() => {
-    const FetchData = async () => {
-      await fetch(`${URL}/jwtid`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setUid(data);
-          // setUid("68439cd6bd7aa52609882df3");
-        })
-        .catch((err) => console.log(err));
+    const checkAuth = async () => {
+      try {
+        const res = await fetch(`${URL}/jwtid`, {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        if (data) {
+          dispatch({ type: SET_AUTHENTICATED, payload: data });
+        }
+      } catch (err) {
+        console.log("No active session");
+      }
     };
-    FetchData();
-    if (uid) dispatch(getOneAdmin(uid));
-  }, [uid]);
+    if (!isAuthenticated) {
+      checkAuth();
+    }
+  }, [dispatch, isAuthenticated]);
+
+  useEffect(() => {
+    if (user && user.id) {
+      dispatch(getOneAdmin(user.id));
+    }
+  }, [user, dispatch]);
+
   return (
     <>
-      <UidContext.Provider value={uid}>
-        <Routes />
-      </UidContext.Provider>
+      <Routes />
     </>
   );
 }

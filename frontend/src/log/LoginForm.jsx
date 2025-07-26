@@ -1,49 +1,24 @@
 import { useState } from "react";
 import "./FormConnexion.css";
+import { useDispatch } from "react-redux";
+import { login } from "../../action/AuthAction";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const URL = "https://addwifi.onrender.com";
-  // const LOCAL = "http://localhost:5000";
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-    const admin = { email, password };
-    fetch(`${URL}/wifi/login/signin`, {
-      method: "POST",
-      body: JSON.stringify(admin),
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then(async (res) => {
-        const data = await res.json();
-        if (!res.ok || data.errors || data.error) {
-          // Gestion de différents formats d'erreur
-          if (data && data.errors) {
-            throw new Error(
-              typeof data.errors === "string"
-                ? data.errors
-                : JSON.stringify(data.errors)
-            );
-          } else if (data && data.error) {
-            throw new Error(
-              typeof data.error === "string"
-                ? data.error
-                : JSON.stringify(data.error)
-            );
-          } else if (data && data.message) {
-            throw new Error(data.message);
-          } else {
-            throw new Error("Erreur de connexion");
-          }
-        }
-        window.location.href = "/";
+    dispatch(login(email, password))
+      .then(() => {
+        navigate("/");
       })
       .catch((err) => {
         setError(err.message || "Erreur de connexion");

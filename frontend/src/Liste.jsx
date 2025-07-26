@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "./Liste.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUsers } from "../action/UsersAction";
+import { URL } from "./Tool";
 
 const ListeUSER = () => {
   const currentDate = new Date();
@@ -140,7 +141,7 @@ const ListeUSER = () => {
     setEditError("");
     try {
       // Appel API pour modifier le prix (à adapter selon ton backend)
-      const URL = "https://addwifi.onrender.com";
+      // const URL = "https://addwifi.onrender.com";
       // const LOCAL = "http://localhost:5000";
       console.log(selectedPaiement.userId);
       const res = await fetch(`${URL}/wifi/user/${selectedPaiement.userId}`, {
@@ -318,6 +319,13 @@ const ListeUSER = () => {
                 </button>
                 <button type="button" onClick={() => setSelectedPaiement(null)}>
                   Annuler
+                </button>
+                <button
+                  className="cancel-button"
+                  type="button"
+                  onClick={() => setSelectedPaiement(null)}
+                >
+                  Supprimer
                 </button>
               </div>
             </form>

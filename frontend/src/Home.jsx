@@ -1,13 +1,12 @@
-import { useContext } from "react";
-import UidContext from "./AppContent";
+import { useSelector } from "react-redux";
 import Index from "./log/Index";
 import ListeUSER from "./Liste";
 import "./HomeConnexion.css";
 
 const Home = () => {
-  const Uid = useContext(UidContext);
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
-  if (Uid) {
+  if (isAuthenticated) {
     return <ListeUSER />;
   }
 
@@ -20,7 +19,7 @@ const Home = () => {
             Gérez facilement les abonnements de vos clients WiFi.
             <br />
             Suivi des paiements, gestion des utilisateurs, et accès rapide à
-            l'état de chaque abonnement.
+            l&apos;état de chaque abonnement.
             <br />
             <br />
             <b>

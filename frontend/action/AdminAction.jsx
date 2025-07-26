@@ -1,5 +1,7 @@
+import { URL } from "../src/Tool";
+
 export const GET_ALL_ADMIN = "GET_ALL_ADMIN";
-const URL = "https://addwifi.onrender.com";
+// const URL = "https://addwifi.onrender.com";
 // const LOCAL = "http://localhost:5000";
 const AdminAction = () => {
   return async (dispatch) => {
