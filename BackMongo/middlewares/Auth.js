@@ -1,8 +1,9 @@
 const jwt = require("jsonwebtoken");
 
 module.exports.Auth = (req, res, next) => {
+  const token = req.cookies.jwt;
+  console.log(token);
   try {
-    const token = req.cookies.jwt;
     const decodetoken = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decodetoken.userId;
     req.auth = { userId: userId };
@@ -17,8 +18,7 @@ module.exports.Auth = (req, res, next) => {
 };
 module.exports.RequireAuth = async (req, res, next) => {
   const token = req.cookies.jwt;
-
-  // console.log(token);
+  console.log(token);
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET, async (err, decodetoken) => {
       if (err) {

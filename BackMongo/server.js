@@ -11,7 +11,6 @@ require("dotenv").config();
 
 // Connexion à MongoDB
 //const URL = "https://addwifi.onrender.com";
-const LOCAL = "http://localhost:5173";
 
 mongoose
   .connect(process.env.MONGOADMIN)
@@ -21,7 +20,11 @@ mongoose
 app.use(express.json());
 app.use(cookieParser());
 // Middleware
-const allowedOrigins = ["http://localhost:5173", "https://wifiadd.netlify.app"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://wifiadd.netlify.app",
+  "http://192.168.100.254:6600",
+];
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -42,6 +45,7 @@ app.use("/wifi", userRouter);
 app.use("/wifi", adminRouter);
 
 const port = process.env.PORT || 5000;
-app.listen(port, () => {
+const IP = "192.168.100.254";
+app.listen(port, IP, () => {
   console.log(`Le serveur est lancé sur le port ${port}`);
 });

@@ -5,7 +5,7 @@ export const GET_ALL_USERS = "GET_ALL_USERS";
 // const LOCAL = "http://localhost:5000";
 export const getAllUsers = () => async (dispatch) => {
   return await fetch(`${URL}/wifi/users`, {
-    method: "GET",
+    method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",

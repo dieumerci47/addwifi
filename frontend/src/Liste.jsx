@@ -100,6 +100,7 @@ const ListeUSER = () => {
 
   // Appliquer le filtre quand mois/annee changent (mais pas lors de la sélection dans le select)
   useEffect(() => {
+    if (mois == "AOUT") setMois("AOÛT");
     setLoading(true);
     setError("");
     const paiements = filterPaiements(mois, annee);
@@ -182,7 +183,6 @@ const ListeUSER = () => {
   return (
     <div className="liste-container">
       <h1>Liste Des Paiements WiFi</h1>
-
       <div className="actions-container">
         <button className="add-button">
           <Link to="/add">Ajouter une personne</Link>

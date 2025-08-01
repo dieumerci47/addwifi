@@ -91,6 +91,7 @@ const Visiteur = () => {
 
   // Appliquer les filtres
   useEffect(() => {
+    if (mois == "AOUT") setMois("AOÛT");
     const paiements = filterPaiements(mois, annee);
     setFilteredPaiements(paiements);
   }, [users, mois, annee]);
