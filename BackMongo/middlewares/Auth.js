@@ -18,7 +18,6 @@ module.exports.Auth = (req, res, next) => {
 };
 module.exports.RequireAuth = async (req, res, next) => {
   const token = req.cookies.jwt;
-  console.log(token);
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET, async (err, decodetoken) => {
       if (err) {

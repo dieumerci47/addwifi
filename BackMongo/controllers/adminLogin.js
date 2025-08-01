@@ -33,8 +33,8 @@ module.exports.signin = (req, res, next) => {
             const token = CreateToken(user._id);
             res.cookie("jwt", token, {
               httpOnly: true,
-              secure: false,
-              sameSite: "lax",
+              secure: true,
+              sameSite: "None",
               maxAge: maxAge,
               path: "/",
             });

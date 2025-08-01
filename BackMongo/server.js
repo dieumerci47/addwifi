@@ -45,7 +45,7 @@ app.use("/wifi", userRouter);
 app.use("/wifi", adminRouter);
 
 const port = process.env.PORT || 5000;
-const IP = "192.168.100.254";
-app.listen(port, IP, () => {
+// const IP = "192.168.100.254";
+app.listen(port, () => {
   console.log(`Le serveur est lancé sur le port ${port}`);
 });

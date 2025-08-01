@@ -314,14 +314,14 @@ const ListeUSER = () => {
                 />
               </div>
               <div className="modal-buttons">
-                <button type="submit" disabled={editLoading}>
+                <button type="submit" className="btn-valider" disabled={editLoading}>
                   {editLoading ? "Modification..." : "Valider"}
                 </button>
-                <button type="button" onClick={() => setSelectedPaiement(null)}>
+                <button type="button" className="btn-annuler" onClick={() => setSelectedPaiement(null)}>
                   Annuler
                 </button>
                 <button
-                  className="cancel-button"
+                  className="btn-supprimer"
                   type="button"
                   onClick={() => setSelectedPaiement(null)}
                 >
