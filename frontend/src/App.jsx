@@ -5,9 +5,10 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { getOneAdmin } from "../action/OneAdminAction";
 import Routes from "./routes/routes";
+import { URL } from "./Tool";
 
 function App() {
-  const URL = "https://addwifi.onrender.com";
+  // const URL = "https://addwifi.onrender.com";
   // const LOCAL = "http://localhost:5000";
   const [uid, setUid] = useState(null);
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ function App() {
         .catch((err) => console.log(err));
     };
     FetchData();
+    // setUid("68439cd6bd7aa52609882df3");
     if (uid) dispatch(getOneAdmin(uid));
   }, [uid]);
   return (

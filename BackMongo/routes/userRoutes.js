@@ -16,4 +16,6 @@ Router.put("/user/:id", Auth, updateUser);
 Router.get("/user/:id", getOneUser);
 Router.post("/user/adduser", Auth, addUser);
 
+//Visiteurs
+Router.post("/visiteur", getAllUsers);
 module.exports = Router;

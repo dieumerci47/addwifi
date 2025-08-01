@@ -1,5 +1,7 @@
+import { URL } from "../src/Tool";
+
 export const GET_ALL_USERS = "GET_ALL_USERS";
-const URL = "https://addwifi.onrender.com";
+// const URL = "https://addwifi.onrender.com";
 // const LOCAL = "http://localhost:5000";
 export const getAllUsers = () => async (dispatch) => {
   return await fetch(`${URL}/wifi/users`, {

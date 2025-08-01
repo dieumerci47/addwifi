@@ -22,10 +22,11 @@ const Navbar = () => {
       ) : (
         <ul>
           <li>WiFiManager</li>
-
-          <NavLink to="/home" className="nav-login-btn">
-            Login
-          </NavLink>
+          {useData.nom ? (
+            <NavLink to="/home" className="nav-login-btn">
+              Login
+            </NavLink>
+          ) : null}
         </ul>
       )}
     </nav>

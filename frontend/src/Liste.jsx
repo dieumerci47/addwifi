@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "./Liste.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUsers } from "../action/UsersAction";
+import { URL } from "./Tool";
 
 const ListeUSER = () => {
   const currentDate = new Date();
@@ -99,6 +100,7 @@ const ListeUSER = () => {
 
   // Appliquer le filtre quand mois/annee changent (mais pas lors de la sélection dans le select)
   useEffect(() => {
+    if (mois == "AOUT") setMois("AOÛT");
     setLoading(true);
     setError("");
     const paiements = filterPaiements(mois, annee);
@@ -140,7 +142,7 @@ const ListeUSER = () => {
     setEditError("");
     try {
       // Appel API pour modifier le prix (à adapter selon ton backend)
-      const URL = "https://addwifi.onrender.com";
+      // const URL = "https://addwifi.onrender.com";
       // const LOCAL = "http://localhost:5000";
       console.log(selectedPaiement.userId);
       const res = await fetch(`${URL}/wifi/user/${selectedPaiement.userId}`, {
@@ -181,7 +183,6 @@ const ListeUSER = () => {
   return (
     <div className="liste-container">
       <h1>Liste Des Paiements WiFi</h1>
-
       <div className="actions-container">
         <button className="add-button">
           <Link to="/add">Ajouter une personne</Link>
@@ -313,11 +314,18 @@ const ListeUSER = () => {
                 />
               </div>
               <div className="modal-buttons">
-                <button type="submit" disabled={editLoading}>
+                <button type="submit" className="btn-valider" disabled={editLoading}>
                   {editLoading ? "Modification..." : "Valider"}
                 </button>
-                <button type="button" onClick={() => setSelectedPaiement(null)}>
+                <button type="button" className="btn-annuler" onClick={() => setSelectedPaiement(null)}>
                   Annuler
+                </button>
+                <button
+                  className="btn-supprimer"
+                  type="button"
+                  onClick={() => setSelectedPaiement(null)}
+                >
+                  Supprimer
                 </button>
               </div>
             </form>

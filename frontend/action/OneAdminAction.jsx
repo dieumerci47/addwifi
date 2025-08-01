@@ -1,5 +1,7 @@
+import { URL } from "../src/Tool";
+
 export const GET_ONE_ADMIN = "GET_ONE_ADMIN";
-const URL = "https://addwifi.onrender.com";
+// const URL = "https://addwifi.onrender.com";
 // const LOCAL = "http://localhost:5000";
 export const getOneAdmin = (uid) => {
   return async (dispatch) => {

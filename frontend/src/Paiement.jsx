@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "./AjouterPersonne.css";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllUsers } from "../action/UsersAction";
+import { URL } from "./Tool";
 const Paiement = () => {
   const Uid = useSelector((state) => state.OneAdminReducer._id);
   const dispatch = useDispatch();
@@ -26,7 +27,7 @@ const Paiement = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const URL = "https://addwifi.onrender.com";
+  // const URL = "https://addwifi.onrender.com";
   // const LOCAL = "http://localhost:5000";
 
   // Effet pour gérer la disparition automatique du toast

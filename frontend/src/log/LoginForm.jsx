@@ -1,12 +1,13 @@
 import { useState } from "react";
 import "./FormConnexion.css";
+import { URL } from "../Tool";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const URL = "https://addwifi.onrender.com";
+  // const URL = "https://addwifi.onrender.com";
   // const LOCAL = "http://localhost:5000";
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -42,8 +43,10 @@ const LoginForm = () => {
           } else {
             throw new Error("Erreur de connexion");
           }
+        } else {
+          window.location.href = "/";
+          console.log(data);
         }
-        window.location.href = "/";
       })
       .catch((err) => {
         setError(err.message || "Erreur de connexion");

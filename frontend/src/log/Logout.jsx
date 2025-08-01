@@ -1,7 +1,8 @@
 import cookie from "js-cookie";
 import { NavLink } from "react-router-dom";
+import { URL } from "../Tool";
 const Logout = () => {
-  const URL = "https://addwifi.onrender.com";
+  // const URL = "https://addwifi.onrender.com";
   // const LOCAL = "http://localhost:5000";
   const removeCookie = (key) => {
     if (window !== "undefined") {

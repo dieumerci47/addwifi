@@ -7,6 +7,7 @@ import SignupForm from "../log/SignupForm";
 import Index from "../log/Index"; */
 import Navbar from "../log/Navbar";
 import Home from "../Home";
+import Visiteur from "../Visiteur";
 // import Acceuil from "../Acceuil";
 const Routess = () => {
   return (
@@ -18,6 +19,7 @@ const Routess = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/paiement" element={<Paiement />} />
+          <Route path="/visiteur" element={<Visiteur />} />
           <Route path="*" element={<Home />} />
           {/* <Route path="/signin" element={<LoginForm />} />
           <Route path="/home" element={<Home />} />
