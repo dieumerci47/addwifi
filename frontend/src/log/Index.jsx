@@ -30,7 +30,7 @@ const Index = ({ Signup, Login }) => {
               id="register"
               type="button"
             >
-              S'inscrire
+              S&apos;inscrire
             </button>
             <button
               className={`auth-tab${SignInModal ? " active" : ""}`}

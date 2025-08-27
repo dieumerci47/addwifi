@@ -4,8 +4,11 @@ import "./Liste.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUsers } from "../action/UsersAction";
 import { URL } from "./Tool";
+import { useContext } from "react";
+import UidContext from "./AppContent";
 
 const ListeUSER = () => {
+  const uuid = useContext(UidContext);
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMth = currentDate.getMonth();
@@ -50,10 +53,12 @@ const ListeUSER = () => {
   const Uid = useSelector((state) => state.OneAdminReducer._id);
   const dispatch = useDispatch();
   const USERS = useSelector((state) => state.UsersReducer);
+  // console.log(USERS);
 
   // Récupérer les utilisateurs de l'admin courant
   const users =
-    USERS.length > 0 ? USERS.filter((user) => user.admin === Uid) : [];
+    USERS.length > 0 ? USERS.filter((user) => user.admin === uuid) : [];
+  console.log(users[0].paiements);
 
   // Récupérer tous les mois disponibles jusqu'au mois actuel
   const availableMonths = Array.from({ length: currentMth + 2 }, (_, index) => {
@@ -95,8 +100,9 @@ const ListeUSER = () => {
 
   // Premier chargement : paiements du mois et année en cours
   useEffect(() => {
-    dispatch(getAllUsers());
-  }, [dispatch]);
+    dispatch(getAllUsers(uuid));
+    // console.log(uuid);
+  }, [dispatch, uuid]);
 
   // Appliquer le filtre quand mois/annee changent (mais pas lors de la sélection dans le select)
   useEffect(() => {
@@ -314,10 +320,18 @@ const ListeUSER = () => {
                 />
               </div>
               <div className="modal-buttons">
-                <button type="submit" className="btn-valider" disabled={editLoading}>
+                <button
+                  type="submit"
+                  className="btn-valider"
+                  disabled={editLoading}
+                >
                   {editLoading ? "Modification..." : "Valider"}
                 </button>
-                <button type="button" className="btn-annuler" onClick={() => setSelectedPaiement(null)}>
+                <button
+                  type="button"
+                  className="btn-annuler"
+                  onClick={() => setSelectedPaiement(null)}
+                >
                   Annuler
                 </button>
                 <button

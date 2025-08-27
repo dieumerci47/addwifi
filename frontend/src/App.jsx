@@ -5,7 +5,8 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { getOneAdmin } from "../action/OneAdminAction";
 import Routes from "./routes/routes";
-import { URL } from "./Tool";
+import { supabase } from "./supabase/supabase";
+// import { URL } from "./Tool";
 
 function App() {
   // const URL = "https://addwifi.onrender.com";
@@ -14,7 +15,7 @@ function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     const FetchData = async () => {
-      await fetch(`${URL}/jwtid`, {
+      /*  await fetch(`${URL}/jwtid`, {
         method: "GET",
         credentials: "include",
         headers: {
@@ -26,7 +27,9 @@ function App() {
           setUid(data);
           // setUid("68439cd6bd7aa52609882df3");
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err)); */
+      const User = await supabase.auth.getUser();
+      setUid(User.data.user.id);
     };
     FetchData();
     // setUid("68439cd6bd7aa52609882df3");

@@ -1,22 +1,18 @@
-import cookie from "js-cookie";
 import { NavLink } from "react-router-dom";
-import { URL } from "../Tool";
+import { supabase } from "../supabase/supabase";
 const Logout = () => {
   // const URL = "https://addwifi.onrender.com";
   // const LOCAL = "http://localhost:5000";
-  const removeCookie = (key) => {
-    if (window !== "undefined") {
-      cookie.remove(key, { expires: 1 });
-    }
-  };
+
   const logout = async () => {
-    await fetch(`${URL}/wifi/login/logout`, {
+    /* await fetch(`${URL}/wifi/login/logout`, {
       method: "POST",
       credentials: "include",
     })
       .then(() => removeCookie("jwt"))
       //.then((res) => res.json())
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err)); */
+    await supabase.auth.signOut();
     window.location = "/";
   };
   return (

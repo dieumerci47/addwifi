@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./FormConnexion.css";
 import { URL } from "../Tool";
+import { supabase } from "./../supabase/supabase";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -9,7 +10,7 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   // const URL = "https://addwifi.onrender.com";
   // const LOCAL = "http://localhost:5000";
-  const handleSubmit = (e) => {
+  /* const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -54,10 +55,25 @@ const LoginForm = () => {
       .finally(() => {
         setLoading(false);
       });
+  }; */
+  const handleSubmite = async (e) => {
+    e.preventDefault();
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      setError(error.message);
+      setLoading(true);
+    } else {
+      window.location.href = "/";
+    }
+    /*   let Users = await supabase.auth.getUser();
+    console.log(Users);
+    console.log(Users.data.user); */
   };
-
   return (
-    <form className="form-container" onSubmit={handleSubmit}>
+    <form className="form-container" onSubmit={handleSubmite}>
       <div className="form-title">Connexion</div>
       {error && <div className="error-message">{error}</div>}
       <div className="form-group">
