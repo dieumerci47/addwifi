@@ -1,19 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import "./AjouterPersonne.css";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllUsers } from "../action/UsersAction";
-import { URL } from "./Tool";
+import UidContext from "./AppContent";
+import { supabase } from "./supabase/supabase";
 const Paiement = () => {
-  const Uid = useSelector((state) => state.OneAdminReducer._id);
+  const uuid = useContext(UidContext);
+  // const Uid = useSelector((state) => state.OneAdminReducer._id);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getAllUsers());
-  }, [dispatch]);
+    dispatch(getAllUsers(uuid));
+  }, [dispatch, uuid]);
   let USERS = useSelector((state) => state.UsersReducer);
   let users;
-  USERS.length > 0
-    ? (users = USERS.filter((user) => user.admin === Uid))
+  USERS && USERS.data && USERS.data.length > 0
+    ? (users = USERS.data.filter((user) => user.admin === uuid))
     : (users = []);
 
   const [newUser, setNewUser] = useState({
@@ -65,6 +67,7 @@ const Paiement = () => {
 
   const handleAdminSubmit = async (e) => {
     e.preventDefault();
+    const date = new Date();
     setLoading(true);
     setError("");
     try {
@@ -75,28 +78,38 @@ const Paiement = () => {
         mois: newUser.mois.toLowerCase(),
         annee: newUser.annee,
       };
+      const { data: oldArray, error: Error } = await supabase
+        .from("users")
+        .select("paiements")
+        .eq("_id", DATAS.userId);
+      if (Error) {
+        console.log(Error);
+        return;
+      }
 
-      await fetch(`${URL}/wifi/admin/payment`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(DATAS),
-      }).then(async (res) => {
-        const data = await res.json();
-        if (!res.ok || data.error) {
-          throw new Error(data.message || "Erreur lors de l'ajout du paiement");
-        }
-        setError("");
-        setNewUser({
-          userId: "",
-          prix: "",
-          mois: "",
-          annee: "",
-        });
-        setShowToast(true);
+      const Data = {
+        _id: { $oid: Math.random().toString(36).substring(2, 9) },
+        prix: DATAS.prix,
+        mois: newUser.mois.toLowerCase(),
+        annee: newUser.annee,
+        payeLe: date.toISOString(),
+      };
+      const updateArray = [...(oldArray[0].paiements || []), Data];
+      await supabase
+        .from("users")
+        .update({
+          paiements: updateArray,
+        })
+        .eq("_id", DATAS.userId);
+
+      setError("");
+      setNewUser({
+        userId: "",
+        prix: "",
+        mois: "",
+        annee: "",
       });
+      setShowToast(true);
     } catch (err) {
       setError(err.message || "Erreur lors de l'ajout du paiement");
     } finally {

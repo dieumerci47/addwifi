@@ -14,17 +14,5 @@ export const getOneAdmin = (uuid) => {
       .then((res) => {
         dispatch({ type: GET_ONE_ADMIN, payload: res });
       });
-    /* fetch(`${URL}/wifi/admin/${uid}`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        dispatch({ type: GET_ONE_ADMIN, payload: res });
-      })
-      .catch((err) => console.log(err)); */
   };
 };

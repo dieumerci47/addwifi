@@ -19,9 +19,6 @@ const Index = ({ Signup, Login }) => {
   return (
     <>
       <div className="">
-        {/* <div className="profil-container">
-            <LeftNAV page={"profil"} />
-          </div> */}
         <div className="">
           <div className="auth-tabs">
             <button

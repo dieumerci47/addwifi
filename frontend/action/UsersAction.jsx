@@ -1,4 +1,3 @@
-// import { URL } from "../src/Tool";
 import { supabase } from "../src/supabase/supabase";
 
 export const GET_ALL_USERS = "GET_ALL_USERS";
@@ -9,16 +8,8 @@ export const getAllUsers = (Uid) => async (dispatch) => {
     .from("users")
     .select("*")
     .eq("admin", Uid)
-    /* fetch(`${URL}/wifi/users`, {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json()) */
     .then((res) => {
-      dispatch({ type: GET_ALL_USERS, payload: res.data });
+      dispatch({ type: GET_ALL_USERS, payload: res });
     })
     .catch((err) => console.log(err));
 };

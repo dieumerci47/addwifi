@@ -6,6 +6,7 @@ import { getAllUsers } from "../action/UsersAction";
 import { URL } from "./Tool";
 import { useContext } from "react";
 import UidContext from "./AppContent";
+import { supabase } from "./supabase/supabase";
 
 const ListeUSER = () => {
   const uuid = useContext(UidContext);
@@ -53,12 +54,12 @@ const ListeUSER = () => {
   const Uid = useSelector((state) => state.OneAdminReducer._id);
   const dispatch = useDispatch();
   const USERS = useSelector((state) => state.UsersReducer);
-  // console.log(USERS);
 
   // Récupérer les utilisateurs de l'admin courant
   const users =
-    USERS.length > 0 ? USERS.filter((user) => user.admin === uuid) : [];
-  console.log(users[0].paiements);
+    USERS && USERS.data && USERS.data.length > 0
+      ? USERS.data.filter((user) => user.admin === uuid)
+      : [];
 
   // Récupérer tous les mois disponibles jusqu'au mois actuel
   const availableMonths = Array.from({ length: currentMth + 2 }, (_, index) => {
@@ -150,18 +151,29 @@ const ListeUSER = () => {
       // Appel API pour modifier le prix (à adapter selon ton backend)
       // const URL = "https://addwifi.onrender.com";
       // const LOCAL = "http://localhost:5000";
-      console.log(selectedPaiement.userId);
-      const res = await fetch(`${URL}/wifi/user/${selectedPaiement.userId}`, {
-        method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: selectedPaiement.userId,
-          paiementId: selectedPaiement._id,
-          prix: Number(newPrice),
-        }),
-      });
-      if (!res.ok) throw new Error("Erreur lors de la modification");
+      const { data: oldArray, error: Error } = await supabase
+        .from("users")
+        .select("paiements")
+        .eq("_id", selectedPaiement.userId);
+      if (Error) {
+        console.log(Error);
+        return;
+      }
+      const updatePrice = oldArray[0].paiements;
+      for (let i = 0; i < updatePrice.length; i++) {
+        if (updatePrice[i]._id.$oid === selectedPaiement._id.$oid) {
+          updatePrice[i].prix = Number(newPrice);
+          break;
+        }
+      }
+      // console.log(updatePrice);
+      await supabase
+        .from("users")
+        .update({
+          paiements: updatePrice,
+        })
+        .eq("_id", selectedPaiement.userId);
+
       // Met à jour localement
       setFilteredPaiements((prev) =>
         prev.map((p) =>
@@ -190,12 +202,12 @@ const ListeUSER = () => {
     <div className="liste-container">
       <h1>Liste Des Paiements WiFi</h1>
       <div className="actions-container">
-        <button className="add-button">
-          <Link to="/add">Ajouter une personne</Link>
-        </button>
-        <button className="add-buttons">
-          <Link to="/paiement">Paiement</Link>
-        </button>
+        <Link to="/add">
+          <button className="add-button">Ajouter une personne</button>
+        </Link>
+        <Link to="/paiement">
+          <button className="add-buttons">Paiement</button>
+        </Link>
 
         <div className="filters">
           <select

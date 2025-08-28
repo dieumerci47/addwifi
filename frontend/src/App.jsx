@@ -15,19 +15,6 @@ function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     const FetchData = async () => {
-      /*  await fetch(`${URL}/jwtid`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setUid(data);
-          // setUid("68439cd6bd7aa52609882df3");
-        })
-        .catch((err) => console.log(err)); */
       const User = await supabase.auth.getUser();
       setUid(User.data.user.id);
     };

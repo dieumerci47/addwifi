@@ -2,7 +2,8 @@ import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import "./AjouterPersonne.css";
 import UidContext from "./AppContent";
-import { URL } from "./Tool";
+// import { URL } from "./Tool";
+import { supabase } from "./supabase/supabase";
 
 const AddUSER = () => {
   const Uid = useContext(UidContext);
@@ -44,25 +45,13 @@ const AddUSER = () => {
         admin: Uid,
       };
 
-      await fetch(`${URL}/wifi/user/adduser`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(DATAS),
-      }).then(async (res) => {
-        const data = await res.json();
-        if (!res.ok || data.error) {
-          throw new Error(data.message || "Erreur lors de l'ajout");
-        }
-        setError("");
-        setNewUser({
-          nom: "",
-          telephone: "",
-        });
-        setShowToast(true);
+      await supabase.from("users").insert(DATAS);
+      setError("");
+      setNewUser({
+        nom: "",
+        telephone: "",
       });
+      setShowToast(true);
     } catch (err) {
       setError(err.message || "Erreur lors de l'ajout");
     } finally {
