@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import "./Liste.css";
 
-import { URL } from "./Tool";
+// import { URL } from "./Tool";
+import { supabase } from "./supabase/supabase";
+// import UidContext from "./AppContent";
 
 const Visiteur = () => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMth = currentDate.getMonth();
 
+  // const uuid = useContext(UidContext);
   const allMoth = [
     "JANVIER",
     "FÉVRIER",
@@ -41,28 +44,29 @@ const Visiteur = () => {
   const [showToast, setShowToast] = useState(false);
 
   // Redux
-  const Uid = "6846e3b5963f0b81d606eb26";
+  const Uid = "7776812f-2dd0-4edf-a201-401900796ddf";
 
   // Fetch des utilisateurs
   useEffect(() => {
     setLoading(true);
-    fetch(`${URL}/wifi/visiteur`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        setUsers(res.filter((user) => user.admin === Uid));
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-        setError("Erreur lors du chargement des utilisateurs");
-      });
+    const FectchData = async () => {
+      await supabase
+        .from("users")
+        .select("*")
+        .eq("admin", Uid)
+        .then((res) => {
+          // console.log(res);
+
+          setUsers(res.data.filter((user) => user.admin === Uid));
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+          setError("Erreur lors du chargement des utilisateurs");
+        });
+    };
+    FectchData();
   }, [Uid]);
 
   // Filtrer les paiements
