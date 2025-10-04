@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import "./Liste.css";
 
 // import { URL } from "./Tool";
@@ -27,12 +27,12 @@ const Visiteur = () => {
   ];
 
   // Filtres affichés dans les selects
-  const [moisSelect, setMoisSelect] = useState("");
-  const [anneeSelect, setAnneeSelect] = useState("");
+ // const [moisSelect, setMoisSelect] = useState("");
+ // const [anneeSelect, setAnneeSelect] = useState("");
 
   // Filtres appliqués
   const [mois, setMois] = useState(allMoth[currentMth]);
-  const [annee, setAnnee] = useState(currentYear);
+  const [annee, /*setAnnee*/] = useState(currentYear);
 
   // Données
   const [users, setUsers] = useState([]);
@@ -70,7 +70,7 @@ const Visiteur = () => {
   }, [Uid]);
 
   // Filtrer les paiements
-  const filterPaiements = (moisFiltre, anneeFiltre) => {
+  const filterPaiements = useCallback((moisFiltre, anneeFiltre) => {
     let paiements = [];
     users.forEach((user) => {
       if (user.paiements && Array.isArray(user.paiements)) {
@@ -79,7 +79,7 @@ const Visiteur = () => {
             paiement.mois &&
             paiement.annee &&
             paiement.mois.toUpperCase() === moisFiltre &&
-            String(paiement.annee) === String(anneeFiltre)
+            String(paiement.annee) === String(anneeFiltre)&&paiement.prix===2000
           ) {
             paiements.push({
               ...paiement,
@@ -91,17 +91,17 @@ const Visiteur = () => {
       }
     });
     return paiements;
-  };
+  }, [users]);
 
   // Appliquer les filtres
   useEffect(() => {
     if (mois == "AOUT") setMois("AOÛT");
     const paiements = filterPaiements(mois, annee);
     setFilteredPaiements(paiements);
-  }, [users, mois, annee]);
+  }, [users, mois, annee, filterPaiements]);
 
   // Récupérer tous les mois disponibles
-  const availableMonths = Array.from({ length: currentMth + 2 }, (_, index) => {
+  /*const availableMonths = Array.from({ length: currentMth + 2 }, (_, index) => {
     const date = new Date(currentYear, index);
     return new Intl.DateTimeFormat("fr-FR", { month: "long" })
       .format(date)
@@ -109,10 +109,10 @@ const Visiteur = () => {
   });
 
   // Récupérer les années (cette année et l'année prochaine)
-  const years = [currentYear, currentYear + 1];
+  const years = [currentYear, currentYear + 1];*/
 
   // Bouton VOIR
-  const handleVoir = () => {
+  /*const handleVoir = () => {
     if (!moisSelect || !anneeSelect) {
       setError("Veuillez sélectionner un mois et une année");
       return;
@@ -120,7 +120,7 @@ const Visiteur = () => {
     setError("");
     setMois(moisSelect);
     setAnnee(anneeSelect);
-  };
+  };*/
 
   // Calcul du total
   const total = filteredPaiements.reduce(
@@ -140,7 +140,7 @@ const Visiteur = () => {
     <div className="liste-container">
       <h1>Liste Des Paiements WiFi</h1>
 
-      <div className="actions-container">
+      {/*<div className="actions-container">
         <div className="filters">
           <select
             name="mois"
@@ -180,48 +180,52 @@ const Visiteur = () => {
             {loading ? "Chargement..." : "VOIR"}
           </button>
         </div>
-      </div>
+      </div>*/}
+
+      <div className=""><h2>{mois}/{annee}</h2></div>
 
       {error && <div className="error-message">{error}</div>}
 
       {loading ? (
         <p className="no-datas">Chargement...</p>
       ) : filteredPaiements.length > 0 ? (
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>N°</th>
-              <th>NOM</th>
-              <th>PRIX</th>
-              <th>MOIS</th>
-              <th>ANNEE</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredPaiements.map((paiement, index) => (
-              <tr key={`${paiement.userId}-${paiement.mois}-${paiement.annee}`}>
-                <td>{index + 1}</td>
-                <td>{paiement.nom.toUpperCase()}</td>
-                <td>{paiement.prix}</td>
-                <td>{paiement.mois.toUpperCase()}</td>
-                <td>{paiement.annee}</td>
+        <div className="table-responsive">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>N°</th>
+                <th>NOM</th>
+                <th>PRIX</th>
+                <th>MOIS</th>
+                <th>ANNEE</th>
               </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td>
-                <strong>Nbre: {filteredPaiements.length}</strong>
-              </td>
-              <td></td>
-              <td>
-                <strong>Total: {total}</strong>
-              </td>
-              <td></td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
+            </thead>
+            <tbody>
+              {filteredPaiements.map((paiement, index) => (
+                <tr key={`${paiement.userId}-${paiement.mois}-${paiement.annee}`}>
+                  <td>{index + 1}</td>
+                  <td>{paiement.nom.toUpperCase()}</td>
+                  <td>{paiement.prix}</td>
+                  <td>{paiement.mois.toUpperCase()}</td>
+                  <td>{paiement.annee}</td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td>
+                  <strong>Nbre: {filteredPaiements.length}</strong>
+                </td>
+                <td></td>
+                <td>
+                  <strong>Total: {total}</strong>
+                </td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       ) : (
         !error && <p className="no-data">Aucune donnée à afficher</p>
       )}
